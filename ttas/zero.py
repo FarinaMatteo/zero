@@ -17,7 +17,7 @@ class Zero(BaseTTAModule):
         self._freeze_params()
         self.name = "ZERO"
         self.num_views = 64
-        self.gamma = 0.1
+        self.gamma = 0.3 # NOTE: updated from the previous value of 0.1, will also update paper on arXiv and readme soon!
 
 
     def prepare_model(self, *args, **kwargs):
