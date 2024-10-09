@@ -18,7 +18,7 @@ class ZeroRLCF(BaseTTAModule):
         
     def set_hyperparams(self, **kwargs):    
         self.num_views = 64
-        self.gamma = 0.1
+        self.gamma = 0.3 # NOTE: update from the previous value of 0.1, will update arxiv and readme soon!
 
     def get_hyperparams(self):
         return {
