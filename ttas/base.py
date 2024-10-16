@@ -45,7 +45,7 @@ class BaseTTAModule(nn.Module):
 
         # pre-compute the text embeddings for all CLIPs around
         if hasattr(self.model, "reset_classnames"):
-            self.model.reset_classnames(classnames, arch)
+            self.model.reset_classnames(classnames)
         if hasattr(self, "reward_model") and hasattr(self.reward_model, "reset_classnames"):
             self.reward_model.reset_classnames(classnames)
         

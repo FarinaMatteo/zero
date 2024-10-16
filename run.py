@@ -21,8 +21,8 @@ def create_results_filename(tta_module, args):
         name += f"_maple"
     name += f"_seed{args.seed}"
     name = name.replace("/", "_")
-    if args.reward_model is not None:
-        name += f"_r{args.reward_model.replace('/', '-')}"
+    if args.reward_arch is not None:
+        name += f"_r{args.reward_arch.replace('/', '-')}"
     if args.templates:
         name += f"_templates"
     return name
@@ -49,10 +49,12 @@ def main(args):
         **dict(model=args.model, 
         arch=args.arch, 
         use_templates=args.templates,
+        pretrained=args.pretrained,
         gpu=args.gpu, 
         ctx_init=args.ctx_init,
         maple_weights=args.maple,
-        reward_model=args.reward_model,
+        reward_arch=args.reward_arch,
+        reward_pretrained=args.reward_pretrained,
         seed=args.seed)
     )
     tta_module = tta_module.to(args.gpu)
@@ -129,7 +131,7 @@ def test_time_adapt_eval(val_loader, tta_module, args):
         images = [img.to(args.gpu, non_blocking=True) for img in images]
         images = torch.cat(images, dim=0)
 
-        # # tta with zero temp is implemented in the forward pass of the model
+        # tta with zero temp is implemented in the forward pass of the model
         with torch.cuda.amp.autocast():
             
             # measure tta time with cuda events
@@ -173,6 +175,8 @@ if __name__ == '__main__':
     # model parameters
     parser.add_argument('-m', '--model', type=str, default='clip', help='model to use: clip/vit', choices=['clip'])
     parser.add_argument('-a', '--arch', metavar='ARCH', default='ViT-B-16')
+    parser.add_argument('--pretrained', type=str, default="openai", help="Pretrained Keyword for the OpenCLIP repo. \
+                        Default: \"openai\", will also use OpenAI's implementation of CLIP.")
     parser.add_argument('--templates', action="store_true", help="Use textual templates (+Ensemble in the paper).")
     
     # data parameters
@@ -191,7 +195,8 @@ if __name__ == '__main__':
     parser.add_argument('--debug_steps', type=int, default=-1)
 
     # arguments for Reinforcement Learning from CLIP Feedback (optional)
-    parser.add_argument('--reward_model', type=str, default=None, help='reward model to use (optional)')
+    parser.add_argument('--reward_arch', type=str, default=None, help='reward model to use (optional)')
+    parser.add_argument('--reward_pretrained', type=str, default=None, help="Enables using OpenCLIP models with ZeroRLCF. Please see the --pretrained flag for more details.")
 
     parser.add_argument('--maple', action="store_true", help='Use MaPLe weights. Will load a different pretraining based on the seed.')
     args = parser.parse_args()

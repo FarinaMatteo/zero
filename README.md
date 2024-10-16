@@ -1,9 +1,28 @@
-# Frustratingly Easy Test-Time Adaptation of Vision-Language Models
-Code for the article "Frustratingly Easy Test-Time Adaptation of Vision-Language Models", arXiv, May 2024.
+<div align="center">
 
 [![arXiv](https://img.shields.io/badge/arXiv-2405.18330-b31b1b.svg)](https://arxiv.org/abs/2405.18330)
 
-Authors: [Matteo Farina](https://scholar.google.com/citations?user=SxQwDD8AAAAJ&hl=it&authuser=1), [Gianni Franchi](https://scholar.google.com/citations?hl=it&authuser=1&user=ZCW6-psAAAAJ), [Giovanni Iacca](https://scholar.google.com/citations?hl=it&authuser=1&user=qSw6YfcAAAAJ), [Massimiliano Mancini](https://scholar.google.com/citations?hl=it&authuser=1&user=bqTPA8kAAAAJ), [Elisa Ricci](https://scholar.google.com/citations?user=xf1T870AAAAJ&hl=it&authuser=1).
+# [ NeurIPS 2024 ] <br> Frustratingly Easy Test-Time Adaptation of Vision-Language Models
+[Matteo Farina](https://scholar.google.com/citations?user=SxQwDD8AAAAJ&hl=it&authuser=1), [Gianni Franchi](https://scholar.google.com/citations?hl=it&authuser=1&user=ZCW6-psAAAAJ), [Giovanni Iacca](https://scholar.google.com/citations?hl=it&authuser=1&user=qSw6YfcAAAAJ), [Massimiliano Mancini](https://scholar.google.com/citations?hl=it&authuser=1&user=bqTPA8kAAAAJ), [Elisa Ricci](https://scholar.google.com/citations?user=xf1T870AAAAJ&hl=it&authuser=1).
+
+</div>
+
+> **Abstract.** 
+*Vision-Language Models seamlessly discriminate among arbitrary semantic categories, yet they still suffer from poor generalization when presented with challenging examples. For this reason, Episodic Test-Time Adaptation (TTA) strategies have recently emerged as powerful techniques to adapt VLMs in the presence of a single unlabeled image. The recent literature on TTA is dominated by the paradigm of prompt tuning by Marginal Entropy Minimization, which, relying on online backpropagation, inevitably slows down inference while increasing memory. In this work, we theoretically investigate the properties of this approach and unveil that a surprisingly strong TTA method lies dormant and hidden within it. We term this approach ZERO (TTA with “zero” temperature), whose design is both incredibly effective and frustratingly simple: augment N times, predict, retain the most confident predictions, and marginalize after setting the Softmax temperature to zero. Remarkably, ZERO requires a single batched forward pass through the vision encoder only and no backward passes. We thoroughly evaluate our approach following the experimental protocol established in the literature and show that ZERO largely surpasses or compares favorably w.r.t. the state-of-the-art while being almost 10× faster and 13× more memory friendly than standard Test-Time Prompt Tuning. Thanks to its simplicity and comparatively negligible computation, ZERO can serve as a strong baseline for future work in this field.*
+
+
+**TLDR.** DON'T FORGET ABOUT MAJORITY VOTING WHEN YOU EVALUATE YOUR TTA METHOD!
+
+## Citation
+If you find this work useful, please consider citing: 
+```
+@article{farina2024frustratingly,
+  title={Frustratingly Easy Test-Time Adaptation of Vision-Language Models},
+  author={Farina, Matteo and Franchi, Gianni and Iacca, Giovanni and Mancini, Massimiliano and Ricci, Elisa},
+  journal={arXiv preprint arXiv:2405.18330},
+  year={2024}
+}
+```
 
 ## Installation
 ### Dependencies
@@ -19,7 +38,7 @@ Install with conda:
 conda env create -f environment.yaml
 ```
 
-### Models
+### Downloading Models from the Internet
 The only model weights you need to download are MaPLe's pretrained initializations. For your convenience, we provide a script to download them automatically. Simply run:
 ```
 ./scripts/download_maple.sh
@@ -102,6 +121,11 @@ Once everything is downloaded, please organize everything as follows:
 |  |  images/
 |  |  |  # class folders
 |  |  split_zhou_UCF101.json
+
+|  eurosat/
+|  |  images/
+|  |  |  # class folders
+|  |  split_zhou_EuroSAT.json
 ```
 
 **IMPORTANT**. By the time of developing this work, the official Stanford Cars' website was unreachable. Please download images from [this Kaggle page](https://www.kaggle.com/datasets/jessicali9530/stanford-cars-dataset) and annotations from [this Drive link](https://drive.google.com/drive/folders/13QnEkFQ8nhzf3jxo0RKX7UQAjrtAnYpR?usp=drive_link). You should organize files as follows:
@@ -128,16 +152,17 @@ We provide different bash files in `scripts` to run different versions of `Zero`
 Note that the `--templates` flag activates the ensemble of textual templates (`+Ensemble` in Tab.1 and 2 of the article).
 The `--maple` flag uses a MaPLe pretraining (only available with CLIP-ViT-B-16). 
 
-## Citation
-If you find this work useful, please consider citing: 
-```
-@article{farina2024frustratingly,
-  title={Frustratingly Easy Test-Time Adaptation of Vision-Language Models},
-  author={Farina, Matteo and Franchi, Gianni and Iacca, Giovanni and Mancini, Massimiliano and Ricci, Elisa},
-  journal={arXiv preprint arXiv:2405.18330},
-  year={2024}
-}
-```
+## Easily switch between diferent Models
+The repository integrates with both [`open_clip`](https://github.com/mlfoundations/open_clip) [a] and the official CLIP implementation from OpenAI. 
+
+You can choose which CLIP model to adapt with the `--arch` and the `--pretrained` flags of `run.py`. While `--arch` is mandatory, `--pretrained` is optional and it will default to the OpenAI implementation (yes, also the implementation, not only the weights). 
+
+For the experiments with CLIP-ViT-B/16 pretrained on the 2B English Subset of LAION presented in the Appendix of the manuscript, set `--arch ViT-B-16` and `--pretrained laion2b_s34b_b88k`. While I have not tried all possible outcomes of CLIP models within `open_clip`, feel free to explore :)
+
+**NOTE.** MaPLe and CoOp weights are available only for OpenAI pretrained models. 
+
+[a] Cherti, Mehdi, et al. "Reproducible scaling laws for contrastive language-image learning." Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2023.
+
 
 ## Acknowledgements
 Parts of this repository are based on [TPT](https://github.com/azshue/TPT), [RLCF](https://github.com/mzhaoshuai/RLCF), [MaPLe](https://github.com/muzairkhattak/multimodal-prompt-learning) and [CoOp](https://github.com/KaiyangZhou/CoOp) repositories. Huge thx to all authors!

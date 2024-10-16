@@ -24,6 +24,7 @@ class Zero(BaseTTAModule):
         if kwargs.get("model") == "clip":
             self.model = get_clip(
                 kwargs.get("arch"),
+                kwargs.get("pretrained"),
                 kwargs.get("gpu"),
                 kwargs.get("ctx_init"),
                 cache_text_features=True,
@@ -40,8 +41,7 @@ class Zero(BaseTTAModule):
 
     def _freeze_params(self):
         for name, param in self.model.named_parameters():
-            if "proj" not in name:
-                param.requires_grad_(False)
+            param.requires_grad_(False)
         print('=> Freezing all parameters.')
         return
 

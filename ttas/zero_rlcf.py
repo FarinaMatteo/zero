@@ -18,7 +18,7 @@ class ZeroRLCF(BaseTTAModule):
         
     def set_hyperparams(self, **kwargs):    
         self.num_views = 64
-        self.gamma = 0.3 # NOTE: update from the previous value of 0.1, will update arxiv and readme soon!
+        self.gamma = 0.3
 
     def get_hyperparams(self):
         return {
@@ -31,6 +31,7 @@ class ZeroRLCF(BaseTTAModule):
         if kwargs.get("model") == "clip":
             self.model = get_clip(
                 clip_arch=kwargs.get("arch"),
+                pretrained=kwargs.get("pretrained"),
                 device=kwargs.get("gpu"),
                 ctx_init=kwargs.get("ctx_init"),
                 freeze_text=True,
@@ -46,7 +47,8 @@ class ZeroRLCF(BaseTTAModule):
 
         # initialize the reward model
         self.reward_model = get_clip(
-            clip_arch=kwargs.get("reward_model"),
+            clip_arch=kwargs.get("reward_arch"),
+            pretrained=kwargs.get("reward_pretrained"),
             device=kwargs.get("gpu"),
             ctx_init=kwargs.get("ctx_init"),
             freeze_text=True,
@@ -59,8 +61,7 @@ class ZeroRLCF(BaseTTAModule):
 
     def _freeze_params(self):
         for name, param in self.model.named_parameters():
-            if "conv1" not in name:
-                param.requires_grad_(False)
+            param.requires_grad_(False)
         print('=> Freezing all parameters.')
 
         for name, param in self.reward_model.named_parameters():

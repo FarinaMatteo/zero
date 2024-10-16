@@ -4,6 +4,8 @@ import torch.nn as nn
 from contextlib import nullcontext
 
 from clip import load, tokenize
+from open_clip import create_model_and_transforms, get_tokenizer
+
 from data.imagenet_prompts import imagenet_classes
 from data.fewshot_datasets import fewshot_datasets
 from data.cls_to_names import *
@@ -12,24 +14,30 @@ from maple_clip.maple import CustomCLIP as MaPLeCLIP
 
 
 class TextEncoder(nn.Module):
-    def __init__(self, clip_model):
+    def __init__(self, clip_model, openclip=False):
         super().__init__()
         self.transformer = clip_model.transformer
         self.positional_embedding = clip_model.positional_embedding
         self.ln_final = clip_model.ln_final
         self.text_projection = clip_model.text_projection
-        self.dtype = clip_model.dtype
+        if openclip:
+            self.dtype = clip_model.visual.conv1.weight.dtype
+            self.register_buffer("attn_mask", clip_model.attn_mask, persistent=False)
+        else:
+            self.dtype = clip_model.dtype
 
 
     def forward(self, prompts, tokenized_prompts):
         """
         This code is identical to the `forward` function of OpenAI's CLIP, but it does not 
         tokenize text on the fly to then lookup the word embedding table. 
-        In constrast, the passed `prompts` are optimized / learned by `PromptLearner`.
         """
         x = prompts + self.positional_embedding.type(self.dtype)
         x = x.permute(1, 0, 2)
-        x = self.transformer(x)
+        if hasattr(self, "attn_mask"):
+            x = self.transformer(x, attn_mask=self.attn_mask)
+        else:
+            x = self.transformer(x)
         x = x.permute(1, 0, 2)
         x = self.ln_final(x).type(self.dtype)
         x = x[torch.arange(x.shape[0]), tokenized_prompts.argmax(dim=-1)] @ self.text_projection
@@ -40,19 +48,28 @@ class ClipWrapper(nn.Module):
     def __init__(self, 
                  device, 
                  arch="ViT-B/16",
+                 pretrained="openai",
                  ctx_init=None, 
                  freeze_vision=False,
                  freeze_text=False,
                  cache_text_features=False,
-                 use_text_templates=False):
+                 use_text_templates=False,
+                 ):
 
         super(ClipWrapper, self).__init__()
+
         self.arch = arch
-        clip, _, _ = load(arch, device=device)
+        self.pretrained = pretrained
+        if pretrained == "openai":
+            clip, _, _ = load(arch, device=device)
+            self.tokenize_callable = tokenize
+        else:
+            clip, _, _ = create_model_and_transforms(arch, pretrained=pretrained, device=device)
+            self.tokenize_callable = get_tokenizer(arch)
         
         self.name = f"CLIP-{arch}"
         self.image_encoder = clip.visual
-        self.text_encoder = TextEncoder(clip)
+        self.text_encoder = TextEncoder(clip, openclip=pretrained!="openai")
         self.logit_scale = clip.logit_scale.data
         
         self.cache_text_features = cache_text_features
@@ -83,20 +100,18 @@ class ClipWrapper(nn.Module):
         return 1/self.logit_scale.exp()
         
 
-    def reset_classnames(self, classnames, arch=None):
+    def reset_classnames(self, classnames):
         self.classnames = classnames
-        if arch is None:
-            arch = self.arch
         
         if self.use_text_templates:
             hard_prompts = []
             for cls in classnames:
                 for template in self.prompt_templates:
                     hard_prompts.append(template.format(cls))
-            self.tokenized_descriptions = tokenize(hard_prompts).to(self.device)
+            self.tokenized_descriptions = self.tokenize_callable(hard_prompts).to(self.device)
         else:
             class_descriptions = [f"{self.hard_prompt} {name}." for name in classnames]
-            self.tokenized_descriptions = tokenize(class_descriptions).to(self.device)
+            self.tokenized_descriptions = self.tokenize_callable(class_descriptions).to(self.device)
         
         if self.cache_text_features and hasattr(self, "text_features"):
             delattr(self, "text_features")
@@ -152,7 +167,7 @@ class ClipWrapper(nn.Module):
         return self.inference(image)
 
 
-def get_clip(clip_arch, device, ctx_init, 
+def get_clip(clip_arch, pretrained, device, ctx_init, 
              freeze_text=False, freeze_vision=False, 
              cache_text_features=False, use_text_templates=False, 
              maple_weights=None, n_maple_ctx=2, maple_prompt_depth=3, maple_seed=1):
@@ -161,6 +176,7 @@ def get_clip(clip_arch, device, ctx_init,
         return ClipWrapper(
             device, 
             arch=clip_arch,
+            pretrained=pretrained,
             ctx_init=ctx_init, 
             freeze_text=freeze_text,
             freeze_vision=freeze_vision,

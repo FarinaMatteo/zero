@@ -18,6 +18,7 @@ class ZeroShot(BaseTTAModule):
         if kwargs.get("model") == "clip":
             self.model = get_clip(
                 kwargs.get("arch"),
+                kwargs.get("pretrained"),
                 kwargs.get("gpu"),
                 kwargs.get("ctx_init"),
                 freeze_text=True,
