@@ -64,7 +64,7 @@ class Zero(BaseTTAModule):
         # compute probabilities and confidence filter 
         l = z_img @ z_txt.t() # unscaled logits
         p = (l / self.model.temp).softmax(1) # probabilities
-        l_filt = confidence_filter(l, p, top=self.gamma) # retain most confident views
+        l_filt, _, sorted_idx = confidence_filter(l, p, top=self.gamma, return_idx=True) # retain most confident views
         
         # zero-out the temperature, marginalize and predict
         zero_temp = torch.finfo(l_filt.dtype).eps
@@ -80,7 +80,8 @@ class Zero(BaseTTAModule):
         # if so, break ties greedily
         if len(ties) > 1:
             k = int(views.size(0) * self.gamma)
-            scalar_pred = greedy_break(ties, l[k:], device=l.device)
+            sorted_l = l[sorted_idx]
+            scalar_pred = greedy_break(ties, sorted_l[k:], device=l.device)
             p_bar[scalar_pred]+=1
         
         # need to unsqueeze for compatibility with the 'accuracy' function

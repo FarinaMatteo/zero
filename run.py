@@ -16,7 +16,7 @@ from ttas import get_tta_module
 
 def create_results_filename(tta_module, args):
     alg_name = str(tta_module)
-    name = f"{alg_name}_{args.arch.replace('/', '-')}" 
+    name = f"{alg_name}_{args.arch.replace('/', '-')}_{args.pretrained}" 
     if args.maple:
         name += f"_maple"
     name += f"_seed{args.seed}"
@@ -31,6 +31,7 @@ def create_results_filename(tta_module, args):
 def augment_results(results, args):
     results = arg_in_results(results, "seed", args.seed)
     results = arg_in_results(results, "arch", args.arch)
+    results = arg_in_results(results, "pretrained", args.pretrained)
     results = arg_in_results(results, "templates", bool(args.templates))
     results = arg_in_results(results, "maple", bool(args.maple))
     return results

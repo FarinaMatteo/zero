@@ -53,9 +53,10 @@ class BaseTTAModule(nn.Module):
 
 
 
-def confidence_filter(logits: torch.Tensor, probs: torch.Tensor, top:float, return_idx=False):
+def confidence_filter(logits: torch.Tensor, probs: torch.Tensor, top:float, return_idx: bool=False):
     batch_entropy = -(probs * probs.log()).sum(1)
-    idx = torch.argsort(batch_entropy, descending=False)[:int(batch_entropy.size()[0] * top)]
+    full_idx = torch.argsort(batch_entropy, descending=False)
+    filt_idx = full_idx[:int(batch_entropy.size()[0] * top)]
     if not return_idx:
-        return logits[idx]
-    return logits[idx], idx
+        return logits[filt_idx]
+    return logits[filt_idx], filt_idx, full_idx

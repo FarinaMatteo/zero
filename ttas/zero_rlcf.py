@@ -95,7 +95,7 @@ class ZeroRLCF(BaseTTAModule):
         # compute probabilities and confidence filter 
         l = z_img @ z_txt.t() # unscaled logits
         p = (l / self.model.temp).softmax(1) # probabilities
-        _, idx = confidence_filter(l, p, top=self.gamma, return_idx=True) # retain most confident views
+        _, filt_idx, sorted_idx = confidence_filter(l, p, top=self.gamma, return_idx=True) # retain most confident views
 
         # zero with the reward model
         if hasattr(self.reward_model, "text_features"):
@@ -104,7 +104,7 @@ class ZeroRLCF(BaseTTAModule):
             z_txt = self.reward_model.get_text_features()
             self.reward_model.text_features = z_txt
 
-        z_img = self.reward_model.get_image_features(views[idx])
+        z_img = self.reward_model.get_image_features(views[filt_idx])
         l_filt = z_img @ z_txt.t()
 
         # zero-out the temperature, marginalize and predict
@@ -121,7 +121,8 @@ class ZeroRLCF(BaseTTAModule):
         # if so, break ties greedily
         if len(ties) > 1:
             k = int(views.size(0) * self.gamma)
-            scalar_pred = greedy_break(ties, l[k:], device=l.device)
+            sorted_l = l[sorted_idx]
+            scalar_pred = greedy_break(ties, sorted_l[k:], device=l.device)
             p_bar[scalar_pred]+=1
         
         # need to unsqueeze for compatibility with the 'accuracy' function
