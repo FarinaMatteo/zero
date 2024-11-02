@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!-- Meta tags for social media banners, these should be filled in appropriately as they are your "business card" -->
+  <!-- Replace the content tag with appropriate information -->
+  <meta name="description" content="Frustratingly Easy Test-Time Adaptation of Vision-Language Models. Accepted to NeurIPS 2024.">
+  <meta property="og:title" content="Frustratingly Easy Test-Time Adaptation of Vision-Language Models" />
+  <meta property="og:description" content="Don't forget about majority voting when you evaluate your TTA method :)" />
+  <meta property="og:url" content="https://farinamatteo.github.io/zero/" />
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
+  <meta property="og:image" content="static/images/teaser.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+
+  <meta name="twitter:title" content="Frustratingly Easy Test-Time Adaptation of Vision-Language Models. Accepted to NeurIPS 2024.">
+  <meta name="twitter:description" content="Frustratingly Easy Test-Time Adaptation of Vision-Language Models">
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
+  <meta name="twitter:image" content="static/images/teaser.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Keywords for your paper to be indexed by-->
+  <meta name="keywords" content="Vision-Language Models, Test-Time Adaptation, Robustness, Model Calibration, NeurIPS 2024">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <title>Frustratingly Easy Test-Time Adaptation of Vision-Language Models</title>
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <!-- and it's easy to individually load additional languages -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+
+  <script>hljs.highlightAll();</script>
+
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</head>
+
+<body>
+
+  <style>
+    .author-block {
+      margin-right: 10px;
+      /* Adjust the value as per your preference */
+    }
+  </style>
+
+  <style>
+    /* Custom CSS for tooltip */
+    .custom-tooltip .tooltip-inner {
+      background-color: #f1f1f1;
+      color: #333333;
+    }
+
+    .custom-tooltip .tooltip.bs-tooltip-top .arrow::before {
+      border-top-color: #f1f1f1;
+    }
+  </style>
+
+  <style>
+    .image-row {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        position: relative; /* To allow positioning of superscripts */
+    }
+    .image-container {
+        height: 10vh; /* Set image height relative to viewport */
+        position: relative; /* To position the superscript relative to this container */
+        margin: 10px; /* Add some margin between images */
+    }
+    .image-container img {
+        width: 100%; /* Make sure the image fills the container */
+        height: 100%; /* Fill container height */
+        /* object-fit: cover; Maintain aspect ratio */
+    }
+    .superscript {
+        position: absolute;
+        top: -5%; /* Adjust the position relative to the container */
+        left: -5%; /* Place it near the top-right corner */
+        font-size: 1.2rem; /* Set font size for the superscript */
+        color: black; /* Choose a suitable color */
+    }
+  </style>
+
+
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <!-- Title here -->
+            <h1 class="title is-1 publication-title">Frustratingly Easy Test-Time Adaptation of Vision-Language Models</h1>
+            <div class="is-size-5 publication-authors">
+              <!-- Paper authors -->
+              <span class="author-block">
+                <a href="https://farinamatteo.github.io" target="_blank">Matteo Farina</a><sup>1</sup>,<sup>*</sup>
+              </span>
+              <span class="author-block">
+                <a href="https://giannifranchi.github.io/" target="_blank">Gianni Franchi</a><sup>2</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://sites.google.com/site/giovanniiacca/" target="_blank">Giovanni Iacca</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://mancinimassimiliano.github.io/" target="_blank">Massimiliano Mancini</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://eliricci.eu/" target="_blank">Elisa Ricci</a><sup>1,3</sup>
+              </span>
+            </div>
+            <!-- Institution Here -->
+            <!-- <div class="is-size-5 publication-authors">
+              <span class="author-block" style="margin-left: 10px;"></span><sup>1</sup></span> University of Trento
+              <span class="author-block" style="margin-left: 10px;"></span><sup>2</sup></span> U2IS, ENSTA Paris, Insitut Polytechnique de Paris
+              <span class="author-block" style="margin-left: 10px;"></span><sup>3</sup></span> Fondazione Bruno Kessler
+            </div> -->
+
+            <!-- Institution Logos Here -->
+             <div class="image-row">
+              <div class="image-container">
+                <img src="static/images/unitn_logo.jpeg" alt="unitn" />
+                <span class="superscript">1</span>
+              </div>
+              <div class="image-container">
+                <img src="static/images/ensta_logo.png" alt="ensta" />
+                <span class="superscript">2</span>
+              </div>
+              <div class="image-container">
+                <img src="static/images/fbk_logo.png" alt="fbk" />
+                <span class="superscript">3</span>
+              </div>
+             </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                   <!-- Arxiv PDF link -->
+                <!-- <span class="link-block">
+                  <a href="https://arxiv.org/pdf/2404.01014" target="_blank"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span> -->
+
+            <!-- Github link -->
+            <span class="link-block">
+              <a href="https://github.com/FarinaMatteo/zero" target="_blank"
+              class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="fab fa-github"></i>
+              </span>
+              <span>Code</span>
+            </a>
+
+            <!-- ArXiv abstract Link -->
+            <span class="link-block">
+              <a href="https://arxiv.org/abs/2405.18330" target="_blank"
+              class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="ai ai-arxiv"></i>
+              </span>
+              <span>arXiv</span>
+            </a>
+          </span>
+
+          <p><br>Correspondence to: m[dot]farina[at]unitn[dot]it</p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Paper abstract -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Vision-Language Models seamlessly discriminate among arbitrary semantic categories, 
+              yet they still suffer from poor generalization when presented with challenging examples. 
+              For this reason, Episodic Test-Time Adaptation (TTA) strategies have recently emerged as powerful techniques to adapt VLMs in the presence of a single unlabeled image. 
+              The recent literature on TTA is dominated by the paradigm of prompt tuning by Marginal Entropy Minimization, 
+              which, relying on online backpropagation, inevitably slows down inference while increasing memory. 
+              In this work, we theoretically investigate the properties of this approach 
+              and unveil that a surprisingly strong TTA method lies dormant and hidden within it. 
+              We term this approach ZERO (TTA with “zero” temperature), whose design is both incredibly effective and frustratingly simple: 
+              augment N times, predict, retain the most confident predictions, and marginalize after setting the Softmax temperature to zero. 
+              Remarkably, ZERO requires a single batched forward pass through the vision encoder only and no backward passes. 
+              We thoroughly evaluate our approach following the experimental protocol established in the literature 
+              and show that ZERO largely surpasses or compares favorably w.r.t. the state-of-the-art 
+              while being almost 10× faster and 13× more memory friendly than standard Test-Time Prompt Tuning. 
+              Thanks to its simplicity and comparatively negligible computation, ZERO can serve as a strong baseline for future work in this field.<br><br>
+
+              <b>TLDR;</b> Don't forget about majority voting when you evaluate your TTA method :)
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- End paper abstract -->
+
+  <!-- End paper abstract -->
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body has-text-centered">
+        <h2 class="title is-3">Takeaways</h2>
+        <!-- <div style="display: flex; justify-content: center;">
+          <img src="static/images/teaser.png" alt="Banner Image" height="100%" width="75%" style="margin-bottom: 55px;">
+        </div> -->
+        <h2 class="subtitle has-text-justified">
+          <br><b>Background on Marginal Entropy Minimization.</b> Test-Time Adaptation aims at adapting a model to a single image at inference time.
+          Ideally, no form of prior or external knowledge should be employed in doing so.
+          An established paradigm for TTA is <b>M</b>arginal <b>E</b>ntropy <b>M</b>inimization, which works by augmenting the image N times, 
+          computing the so-called "marginal probability distribution" (i.e., the average probability distribution over the views), and 
+          minimizing the entropy of this distribution.<br><br>
+
+          <b>Findings.</b> We find that the argmax of the marginal distribution is invariant to <b>MEM</b> most of the time (and can be guaranteed to be so under certain conditions), 
+          and that this marginal distribution itself is reasonably better than standard inference, under the assumption that the model is well-calibrated.
+          <br><br>Empirical evidence for these findings is shown below (left: invariance, right: ensemble verification).
+        </h2>
+        <img src="static/images/I_binned_ent_vs_invariance.png" alt="Banner Image" style="height: 18em; width: auto; padding-inline: 2rem;">
+        <img src="static/images/ensemble_verification_over_datasets.png" alt="Banner Image" style="height: 18em; width: auto; padding-inline: 2rem">
+
+        <h2 class="subtitle has-text-justified">
+          <b>Problem.</b> Calibration is missing on augmented data, but we largely observe that CLIP models are still pretty accurate in this regime.
+          For example, here is what the reliability plots of CLIP-ViT-B-16 look like.
+        </h2>
+        <img src="static/images/rpI.png" alt="Banner Image" style="height: 20em; width: auto;">
+
+        <h2 class="subtitle has-text-justified">
+          <b>TTA with "zero" temperature</b> is a direct consequence of these observations: since confidence information is unreliable, 
+          simply compute the marginal distribution <i>after</i> the temperature has been zeroed-out! By only adapting this parameter, we are effectively marginalizing
+          across one-hot encoded vectors... does this remind you of something?
+        </h2>
+
+      </div>
+    </div>
+  </section>
+  <!-- End paper abstract -->
+
+  <!-- Method overview-->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Implementation</h2>
+      <h2 class="subtitle has-text-centered" style="padding: 0px; margin: 0px">ZERO is implemented in a few lines of code. You can find a PyTorch-like implementation right here :)</h2>
+      <pre class="has-text-justified" style="width: 80rem; overflow-x: auto; padding: 0px; margin: 0px">
+      <code class="python" style="padding: 0px; margin: 0px">
+        def zero(image, z_txt, N, gamma, temp):
+          """
+          :param z_txt: pre-computed text embeddings (C,hdim)
+          :param temp: model’s original temperature
+          :param augment: takes (C,H,W) and returns (N,C,H,W)
+          :param gamma: filtering percentile (e.g., 0.3)
+          """
+          views = augment(image, num_views=N) # generate augmented views
+          l = model.image_encoder(views) @ z_txt.t() # predict (unscaled logits)
+          l_filt = confidence_filter(l, temp, top=gamma) # retain most confident preds
+          zero_temp = torch.finfo(l_filt.dtype).eps # zero temperature
+          p_bar = (l_filt / zero_temp).softmax(dim=1).sum(dim=0) # marginalize
+          return p_bar.argmax()
+      </code>
+      </pre>
+    </div>
+  </section>
+  <!-- End method overview -->
+
+    <!-- Results -->
+    <section class="hero">
+      <div class="container is-max-desktop">
+        <div class="hero-body has-text-centered">
+          <h2 class="title is-3">Results</h2>
+          <h2 class="subtitle has-text-justified">
+            <br>We evaluate ZERO on the standard TTA benchmarks, including robustness to Natural Distribution Shifts and Fine-grained Classification.
+            The results below report CLIP-ViT-B-16 from OpenAI, and compare ZERO to TPT, PromptAlign and RLCF.
+          </h2>
+  
+          <p><b>Robustness to Natural Distribution Shifts</b></p>
+          <img src="static/images/nds.png" alt="Banner Image" style="height: auto; width: 100em;">
+          <br><br>
+
+          <p><b>Fine-grained Classification</b></p>
+          <img src="static/images/fg.png" alt="Banner Image" style="height: auto; width: 100em;">
+
+          <h2 class="subtitle has-text-justified"><br>
+            We find that ZERO, in all its simplicity, establishes a new <b>state-of-the-art</b> in TTA! 
+            Don't forget about majority voting when you evaluate your TTA method!! :)
+          </h2>
+
+        </div>
+      </div>
+    </section>
+    <!-- Results -->
+
+    <!-- Acknowledgements -->
+    <section class="hero is-light">
+      <div class="container is-max-desktop">
+        <div class="hero-body has-text-centered">
+          <h2 class="title is-3">Acknowledgements</h2>
+          <h2 class="subtitle has-text-justified">
+            <br>The authors acknowledge the CINECA award under the ISCRA initiative for the availability of high-performance computing resources and support. 
+            Matteo Farina is supported by the PRIN project LEGO-AI (Prot.2020TA3K9N) and the PAT project AI@TN.
+            This work was supported by the projects EU Horizon ELIAS (No. 101120237), AI4TRUST (No.101070190), 
+            FAIR - Future AI Research (PE00000013), funded by NextGeneration EU, and carried out in the Vision and Learning 
+            joint laboratory of Fondazione Bruno Kessler and the University of Trento, Italy.
+          </h2>
+
+        </div>
+      </div>
+    </section>
+    <!-- Acknowledgements -->
+
+    <!--BibTex citation -->
+    <!-- <section class="section" id="BibTeX">
+        <div class="container is-max-desktop content">
+          <h2 class="title">BibTeX</h2>
+          <pre style="padding: 0px; margin: 0px"><code style="overflow-x: auto; padding: 0px; margin: 0px">
+            @article{farina2024frustratingly,
+              title={Frustratingly Easy Test-Time Adaptation of Vision-Language Models},
+              author={Farina, Matteo and Franchi, Gianni and Iacca, Giovanni and Mancini, Massimiliano and Ricci, Elisa},
+              journal={arXiv preprint arXiv:2405.18330},
+              year={2024}
+          }</code></pre>
+        </div>
+    </section> -->
+  <!--End BibTex citation -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+
+  <script>
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+  </script>
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+
+            <p>
+              This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template"
+                target="_blank">Academic Project Page Template</a>.
+              You are free to borrow the code of this website, we just ask that you link back to this page in the footer.
+              <br> This website is licensed under a <a rel="license"
+                href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+                Commons Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+
+  <!-- Statcounter tracking code -->
+  <!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
+  <!-- End of Statcounter Code -->
+
+</body>
+
+</html>
