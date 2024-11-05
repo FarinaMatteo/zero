@@ -7,17 +7,27 @@ from clip.custom_clip import get_clip
 from utils.tools import print, greedy_break
 
 
-
-
 class Zero(BaseTTAModule):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        self.set_hyperparams(**kwargs)
         self.prepare_model(*args, **kwargs)
         self._freeze_params()
         self.name = "ZERO"
+        print("=> Hyperparameters: {}".format(self.get_hyperparams()))
+
+    def set_hyperparams(self, **kwargs):
+        # leaving this as a setter so you can change the hyperparams
+        # with kwargs if you want
         self.num_views = 64
-        self.gamma = 0.3 # NOTE: updated from the previous value of 0.1, will also update paper on arXiv and readme soon!
+        self.gamma = 0.3
+
+    def get_hyperparams(self):
+        return {
+            "num_views": self.num_views,
+            "gamma": self.gamma
+        }
 
 
     def prepare_model(self, *args, **kwargs):
