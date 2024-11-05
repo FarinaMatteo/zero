@@ -1,6 +1,7 @@
 <div align="center">
 
 [![arXiv](https://img.shields.io/badge/arXiv-2405.18330-b31b1b.svg)](https://arxiv.org/abs/2405.18330)
+[![Project Page](https://img.shields.io/badge/Project_Page-9be4f2)](https://farinamatteo.github.io/zero/)
 
 # [ NeurIPS 2024 ] <br> Frustratingly Easy Test-Time Adaptation of Vision-Language Models
 [Matteo Farina](https://scholar.google.com/citations?user=SxQwDD8AAAAJ&hl=it&authuser=1), [Gianni Franchi](https://scholar.google.com/citations?hl=it&authuser=1&user=ZCW6-psAAAAJ), [Giovanni Iacca](https://scholar.google.com/citations?hl=it&authuser=1&user=qSw6YfcAAAAJ), [Massimiliano Mancini](https://scholar.google.com/citations?hl=it&authuser=1&user=bqTPA8kAAAAJ), [Elisa Ricci](https://scholar.google.com/citations?user=xf1T870AAAAJ&hl=it&authuser=1).
