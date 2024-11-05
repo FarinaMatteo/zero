@@ -159,7 +159,7 @@ You can choose which CLIP model to adapt with the `--arch` and the `--pretrained
 
 For the experiments with CLIP-ViT-B/16 pretrained on the 2B English Subset of LAION presented in the Appendix of the manuscript, set `--arch ViT-B-16` and `--pretrained laion2b_s34b_b88k`. While I have not tried all possible outcomes of CLIP models within `open_clip`, feel free to explore :)
 
-**NOTE.** MaPLe and CoOp weights are available only for OpenAI pretrained models. 
+**NOTE.** MaPLe weights are available only for OpenAI pretrained models. 
 
 [a] Cherti, Mehdi, et al. "Reproducible scaling laws for contrastive language-image learning." Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2023.
 
