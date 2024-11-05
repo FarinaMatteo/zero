@@ -166,7 +166,7 @@ For the experiments with CLIP-ViT-B/16 pretrained on the 2B English Subset of LA
 
 
 ## Acknowledgements
-Parts of this repository are based on [TPT](https://github.com/azshue/TPT), [RLCF](https://github.com/mzhaoshuai/RLCF), [MaPLe](https://github.com/muzairkhattak/multimodal-prompt-learning) and [CoOp](https://github.com/KaiyangZhou/CoOp) repositories. Huge thx to all authors!
+Parts of this repository are based on [TPT](https://github.com/azshue/TPT), [RLCF](https://github.com/mzhaoshuai/RLCF), [MaPLe](https://github.com/muzairkhattak/multimodal-prompt-learning) and [CoOp](https://github.com/KaiyangZhou/CoOp) repositories. Huge thx to all authors! Favicon credits [here](https://www.flaticon.com/free-icons/wizard).
 
 ## Contacts
 Please do not hesitate to file an issue or to contact me at `m.farina@unitn.it`. I'll do my best to help!
