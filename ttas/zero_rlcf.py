@@ -4,6 +4,7 @@ from .base import confidence_filter, BaseTTAModule
 from utils.tools import print, greedy_break
 from clip.custom_clip import get_clip
 
+
 class ZeroRLCF(BaseTTAModule):
 
     def __init__(self, *args, **kwargs) -> None:
@@ -11,12 +12,12 @@ class ZeroRLCF(BaseTTAModule):
         self.set_hyperparams(**kwargs)
         self.prepare_model(*args, **kwargs)
         self._freeze_params()
-
-        # log hyperparameters
         self.name = "ZERO-RLCF"
         print("=> Hyperparameters: {}".format(self.get_hyperparams()))
         
     def set_hyperparams(self, **kwargs):    
+        # leaving this as a setter so you can change the hyperparams
+        # with kwargs if you want
         self.num_views = 64
         self.gamma = 0.3
 
@@ -60,10 +61,11 @@ class ZeroRLCF(BaseTTAModule):
         )
 
     def _freeze_params(self):
+        print('=> Freezing all parameters of the student model.')
         for name, param in self.model.named_parameters():
             param.requires_grad_(False)
-        print('=> Freezing all parameters.')
 
+        print('=> Freezing all parameters of the teacher model.')
         for name, param in self.reward_model.named_parameters():
             param.requires_grad_(False)
         return
