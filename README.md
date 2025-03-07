@@ -1,10 +1,18 @@
 <div align="center">
 
+<h2>NeurIPS 2024<br>Frustratingly Easy Test-Time Adaptation of Vision-Language Models</h2>
+
+<p>
+  <a href="https://scholar.google.com/citations?user=SxQwDD8AAAAJ&authuser=1">Matteo Farina</a>,
+  <a href="https://scholar.google.com/citations?authuser=1&user=ZCW6-psAAAAJ">Gianni Franchi</a>,
+  <a href="https://scholar.google.com/citations?authuser=1&user=qSw6YfcAAAAJ">Giovanni Iacca</a>,
+  <a href="https://scholar.google.com/citations?authuser=1&user=bqTPA8kAAAAJ">Massimiliano Mancini</a> and 
+  <a href="https://scholar.google.com/citations?user=xf1T870AAAAJ&authuser=1">Elisa Ricci</a>
+  <br>
+</p>
+
 [![arXiv](https://img.shields.io/badge/arXiv-2405.18330-b31b1b.svg)](https://arxiv.org/abs/2405.18330)
 [![Project Page](https://img.shields.io/badge/Project_Page-9be4f2)](https://farinamatteo.github.io/zero/)
-
-# [ NeurIPS 2024 ] <br> Frustratingly Easy Test-Time Adaptation of Vision-Language Models
-[Matteo Farina](https://scholar.google.com/citations?user=SxQwDD8AAAAJ&hl=it&authuser=1), [Gianni Franchi](https://scholar.google.com/citations?hl=it&authuser=1&user=ZCW6-psAAAAJ), [Giovanni Iacca](https://scholar.google.com/citations?hl=it&authuser=1&user=qSw6YfcAAAAJ), [Massimiliano Mancini](https://scholar.google.com/citations?hl=it&authuser=1&user=bqTPA8kAAAAJ), [Elisa Ricci](https://scholar.google.com/citations?user=xf1T870AAAAJ&hl=it&authuser=1).
 
 </div>
 
