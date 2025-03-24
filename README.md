@@ -24,7 +24,7 @@
 
 ## Citation
 If you find this work useful, please consider citing: 
-```
+```bibtex
 @article{farina2024frustratingly,
   title={Frustratingly Easy Test-Time Adaptation of Vision-Language Models},
   author={Farina, Matteo and Franchi, Gianni and Iacca, Giovanni and Mancini, Massimiliano and Ricci, Elisa},
